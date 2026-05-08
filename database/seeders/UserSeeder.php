@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
         // Admin
         User::create([
             'name' => 'Admin User',
-            'email' => 'admin@horizon.com',
+            'email' => 'admin@siha.com',
             'password' => 'password',
             'role' => 'admin',
         ]);
@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
         // Doctor
         User::create([
             'name' => 'Dr. Smith',
-            'email' => 'doctor@horizon.com',
+            'email' => 'doctor@siha.com',
             'password' => 'password',
             'role' => 'doctor',
         ]);
@@ -32,7 +32,7 @@ class UserSeeder extends Seeder
         // Staff
         User::create([
             'name' => 'Sarah Staff',
-            'email' => 'staff@horizon.com',
+            'email' => 'staff@siha.com',
             'password' => 'password',
             'role' => 'staff',
         ]);
