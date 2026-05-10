@@ -32,13 +32,11 @@ class ReportController extends Controller
         $pendingInvoices = Invoice::whereIn('status', ['unpaid', 'partially_paid'])->count();
         $pendingAmount   = Invoice::whereIn('status', ['unpaid', 'partially_paid'])->sum('remaining_amount');
 
-        $totalRefunded = \App\Models\Refund::sum('amount');
 
         return response()->json([
             'daily_revenue'    => round($dailyRevenue, 2),
             'monthly_revenue'  => round($monthlyRevenue, 2),
             'total_revenue'    => round($totalRevenue, 2),
-            'total_refunded'   => round($totalRefunded, 2),
             'pending_invoices' => $pendingInvoices,
             'pending_amount'   => round($pendingAmount, 2),
         ]);

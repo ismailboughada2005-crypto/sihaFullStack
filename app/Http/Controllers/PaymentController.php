@@ -11,7 +11,7 @@ class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Payment::with(['invoice', 'patient', 'processor', 'refunds'])
+        $query = Payment::with(['invoice', 'patient', 'processor'])
             ->orderBy('payment_date', 'desc');
 
         if ($request->filled('status')) {
@@ -34,7 +34,19 @@ class PaymentController extends Controller
             $query->whereDate('payment_date', '<=', $request->date_to);
         }
 
-        return response()->json($query->paginate(15));
+        if ($request->filled('search')) {
+            $s = $request->search;
+            $query->where(function($q) use ($s) {
+                $q->whereHas('patient', function($pq) use ($s) {
+                    $pq->where('nom', 'like', "%$s%")
+                       ->orWhere('prenom', 'like', "%$s%");
+                })->orWhereHas('invoice', function($iq) use ($s) {
+                    $iq->where('invoice_number', 'like', "%$s%");
+                });
+            });
+        }
+
+        return response()->json($query->get());
     }
 
     public function store(Request $request)
@@ -97,16 +109,12 @@ class PaymentController extends Controller
     public function show(Payment $payment)
     {
         return response()->json(
-            $payment->load(['invoice.items', 'patient', 'processor', 'refunds'])
+            $payment->load(['invoice.items', 'patient', 'processor'])
         );
     }
 
     public function update(Request $request, Payment $payment)
     {
-        if ($payment->status === 'refunded') {
-            return response()->json(['error' => 'Cannot edit a refunded payment.'], 422);
-        }
-
         $validated = $request->validate([
             'payment_method' => 'sometimes|in:cash,credit_card,bank_transfer,mobile_payment',
             'notes'          => 'nullable|string',
@@ -119,10 +127,6 @@ class PaymentController extends Controller
 
     public function destroy(Payment $payment)
     {
-        if ($payment->refunds()->exists()) {
-            return response()->json(['error' => 'Cannot delete a payment that has been refunded.'], 422);
-        }
-
         DB::beginTransaction();
         try {
             $invoice = $payment->invoice;

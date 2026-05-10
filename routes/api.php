@@ -9,9 +9,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\RefundController;
 use App\Http\Controllers\ReportController;
-use App\Http\Controllers\InsuranceClaimController;
+use App\Http\Controllers\DoctorAppointmentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -37,14 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('payments', PaymentController::class);
     Route::get('payments/{payment}/receipt', [PaymentController::class, 'receipt']);
 
-    // Refunds
-    Route::apiResource('refunds', RefundController::class)->except(['update']);
-
-    // Insurance
-    Route::get('insurance/companies', [InsuranceClaimController::class, 'companies']);
-    Route::post('insurance/companies', [InsuranceClaimController::class, 'storeCompany']);
-    Route::apiResource('insurance-claims', InsuranceClaimController::class);
-
     // Reports / Analytics
     Route::prefix('reports')->group(function () {
         Route::get('dashboard',        [ReportController::class, 'dashboard']);
@@ -52,5 +43,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('daily-revenue',    [ReportController::class, 'dailyRevenue']);
         Route::get('payment-methods',  [ReportController::class, 'paymentMethodBreakdown']);
         Route::get('top-patients',     [ReportController::class, 'topPatients']);
+    });
+
+    // ─── Doctor Appointments Module ──────────────────────────────────────────
+    Route::prefix('doctor')->group(function () {
+        Route::get('appointments', [DoctorAppointmentController::class, 'index']);
+        Route::patch('appointments/{appointment}/confirm', [DoctorAppointmentController::class, 'confirm']);
+        Route::patch('appointments/{appointment}/cancel', [DoctorAppointmentController::class, 'cancel']);
+        Route::patch('appointments/{appointment}/complete', [DoctorAppointmentController::class, 'complete']);
     });
 });

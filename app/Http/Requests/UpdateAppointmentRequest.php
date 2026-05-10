@@ -23,12 +23,14 @@ class UpdateAppointmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'patientId' => 'sometimes|exists:patients,id',
-            'doctorId' => 'sometimes|exists:medecins,id',
-            'date' => 'sometimes|date',
-            'time' => 'sometimes|string|max:10',
+            'patient_id' => 'sometimes|exists:patients,id',
+            'doctor_id' => 'sometimes|exists:medecins,id',
+            'appointment_date' => 'sometimes|date',
+            'appointment_time' => 'sometimes|string|max:10',
             'type' => 'sometimes|string|max:50',
-            'status' => 'sometimes|string|max:20'
+            'status' => 'sometimes|string|max:20',
+            'notes' => 'sometimes|nullable|string',
+            'cancellation_reason' => 'sometimes|nullable|string'
         ];
     }
 }
