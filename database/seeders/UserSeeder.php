@@ -14,27 +14,33 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Admin
-        User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@siha.com',
-            'password' => 'password',
-            'role' => 'admin',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'admin@siha.com'],
+            [
+                'name' => 'Admin User',
+                'password' => Hash::make('password'),
+                'role' => 'admin',
+            ]
+        );
 
         // Doctor
-        User::create([
-            'name' => 'Dr. Smith',
-            'email' => 'doctor@siha.com',
-            'password' => 'password',
-            'role' => 'doctor',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'doctor@siha.com'],
+            [
+                'name' => 'Dr. Smith',
+                'password' => Hash::make('password'),
+                'role' => 'doctor',
+            ]
+        );
 
         // Staff
-        User::create([
-            'name' => 'Sarah Staff',
-            'email' => 'staff@siha.com',
-            'password' => 'password',
-            'role' => 'staff',
-        ]);
+        User::updateOrCreate(
+            ['email' => 'staff@siha.com'],
+            [
+                'name' => 'Sarah Staff',
+                'password' => Hash::make('password'),
+                'role' => 'staff',
+            ]
+        );
     }
 }
