@@ -32,8 +32,11 @@ class PatientController extends Controller
      */
     public function show(string $id)
     {
-        $patient = Patient::findOrFail($id);
-        return response()->json($patient,200);
+        $patient = Patient::with(['appointments' => function ($query) {
+            $query->orderBy('appointment_date', 'desc')->orderBy('appointment_time', 'desc');
+        }, 'appointments.doctor'])->findOrFail($id);
+        
+        return response()->json($patient, 200);
     }
 
     /**
