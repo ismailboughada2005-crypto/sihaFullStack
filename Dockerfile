@@ -23,7 +23,6 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 COPY . /var/www/html
 
 # Install Composer
-COPY ./backEnd /var/www/htmlr
 RUN composer install --no-dev --optimize-autoloader
 
 # Set permissions
