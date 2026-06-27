@@ -31,5 +31,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-# التعديل هنا: غانفذو الأوامر ونخليو Apache يخدم هو الأول في الـ Foreground
-CMD sh -c "php artisan migrate:fresh --force && php artisan db:seed --force && apache2-foreground"
+# الحل هنا: شعلنا Apache نيشان بلا ما نبرزطوه بالـ Migrate ف الـ Build
+CMD ["apache2-foreground"]

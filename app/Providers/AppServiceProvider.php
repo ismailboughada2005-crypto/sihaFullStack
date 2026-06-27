@@ -19,7 +19,17 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      */
     public function boot(): void
-    {
-        Schema::defaultStringLength(191);
+{
+    // غايدير migrate و seed بوحدو ف السيرفر بلا ما يحتاج Shell
+    if (config('app.env') === 'production') {
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        } catch (\Exception $e) {
+            // كايتجاهل الغلط إذا كانوا الجداول ديجا ناضيين
+        }
     }
+}
+
+
 }
