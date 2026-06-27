@@ -31,8 +31,7 @@ class StoreAppointmentRequest extends FormRequest
             'appointment_time' => 'required|string|max:10',
             'type' => 'required|string|max:50',
             'status' => 'required|string|max:20',
-            'notes' => 'nullable|string',
-            'room_id' => 'nullable|exists:rooms,id'
+            'notes' => 'nullable|string'
         ];
     }
 

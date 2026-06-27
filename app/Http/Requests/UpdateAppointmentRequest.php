@@ -32,8 +32,7 @@ class UpdateAppointmentRequest extends FormRequest
             'type' => 'sometimes|string|max:50',
             'status' => 'sometimes|string|max:20',
             'notes' => 'sometimes|nullable|string',
-            'cancellation_reason' => 'sometimes|nullable|string',
-            'room_id' => 'sometimes|nullable|exists:rooms,id'
+            'cancellation_reason' => 'sometimes|nullable|string'
         ];
     }
 
