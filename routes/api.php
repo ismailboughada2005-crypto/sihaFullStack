@@ -13,8 +13,10 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DoctorAppointmentController;
 use Illuminate\Support\Facades\Route;
 
+use \App\Models\User;
+
 Route::get('/test-users', function() {
-    return response()->json(\App\Models\User::all(['id', 'email', 'name', 'email']));
+    return response()->json(User::all(['id', 'email', 'name', 'email']));
 });
 
 Route::post('/login', [AuthController::class, 'login']);
