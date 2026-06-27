@@ -14,7 +14,7 @@ use App\Http\Controllers\DoctorAppointmentController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/test-users', function() {
-    return response()->json(\App\Models\User::all(['id', 'name', 'email']));
+    return response()->json(\App\Models\User::all(['id', 'email', 'name', 'email']));
 });
 
 Route::post('/login', [AuthController::class, 'login']);
