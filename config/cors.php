@@ -7,7 +7,7 @@ return [
 
     // 'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', '*')),
 
-    'allowed_origins' => explode(',', env('ALLOWED_ORIGINS', '*')),
+    'allowed_origins' => (array) explode(',', env('ALLOWED_ORIGINS', '*')),
 
     'allowed_origins_patterns' => [],
 
