@@ -13,12 +13,6 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\DoctorAppointmentController;
 use Illuminate\Support\Facades\Route;
 
-use \App\Models\User;
-
-Route::get('/test-users', function() {
-    return response()->json(User::all(['id', 'name', 'email']));
-});
-
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {

@@ -7,7 +7,7 @@ return [
 
     // 'allowed_origins' => explode(',', env('CORS_ALLOWED_ORIGINS', '*')),
 
-    'allowed_origins' => 'https://siha-front-end.vercel.app/',
+    'allowed_origins' => ['https://siha-front-end.vercel.app/'],
 
     'allowed_origins_patterns' => [],
 
