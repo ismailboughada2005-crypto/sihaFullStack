@@ -26,6 +26,15 @@ class AdministrateurController extends Controller
      */
     public function store(StoreAdministrateurRequest $request)
     {
+        $currentUser = auth()->user();
+        $seniorAdminEmail = 'admin@siha.com';
+
+        if (!$currentUser || $currentUser->email !== $seniorAdminEmail) {
+            return response()->json([
+                'message' => 'Unauthorized: Only the senior administrator can add administrators.'
+            ], 403);
+        }
+
         return DB::transaction(function () use ($request) {
             // Create user account
             $user = User::create([
@@ -58,9 +67,37 @@ class AdministrateurController extends Controller
      */
     public function update(UpdateAdministrateurRequest $request, string $id)
     {
-        $administrateur = Administrateur::findOrFail($id);
-        $administrateur->update($request->validated());
-        return response()->json($administrateur,200);
+        $currentUser = auth()->user();
+        $seniorAdminEmail = 'admin@siha.com';
+
+        if (!$currentUser || $currentUser->email !== $seniorAdminEmail) {
+            return response()->json([
+                'message' => 'Unauthorized: Only the senior administrator can update administrators.'
+            ], 403);
+        }
+
+        return DB::transaction(function () use ($request, $id) {
+            $administrateur = Administrateur::findOrFail($id);
+            $administrateur->update($request->validated());
+
+            if ($administrateur->user_id) {
+                $user = User::find($administrateur->user_id);
+                if ($user) {
+                    $userData = [];
+                    if ($request->has('nom')) $userData['name'] = $request->nom;
+                    if ($request->has('email')) $userData['email'] = $request->email;
+                    if ($request->has('motDePasse') && !empty($request->motDePasse)) {
+                        $userData['password'] = $request->motDePasse;
+                    }
+                    
+                    if (!empty($userData)) {
+                        $user->update($userData);
+                    }
+                }
+            }
+
+            return response()->json($administrateur, 200);
+        });
     }
 
     /**
@@ -71,16 +108,15 @@ class AdministrateurController extends Controller
         $currentUser = auth()->user();
         $seniorAdminEmail = 'admin@siha.com';
 
-        // 1. Check if the authenticated user is the senior admin
         if (!$currentUser || $currentUser->email !== $seniorAdminEmail) {
             return response()->json([
-                'message' => 'Unauthorized: Only the senior administrator (admin@siha.com) can revoke administrative access.'
+                'message' => 'Unauthorized: Only the senior administrator can revoke administrative access.'
             ], 403);
         }
 
         $administrateur = Administrateur::findOrFail($id);
 
-        // 2. Prevent deleting the senior admin record itself
+        // Prevent deleting the senior admin record
         if ($administrateur->user_id) {
             $userToDelete = User::find($administrateur->user_id);
             if ($userToDelete && $userToDelete->email === $seniorAdminEmail) {
@@ -90,8 +126,15 @@ class AdministrateurController extends Controller
             }
             User::destroy($administrateur->user_id);
         } else {
-            $administrateur->delete();
+            // Fallback in case there is no user_id, though rare
+            if ($administrateur->email === $seniorAdminEmail) {
+                return response()->json([
+                    'message' => 'Critical: The root administrator account cannot be deleted.'
+                ], 403);
+            }
         }
+        
+        $administrateur->delete();
 
         return response()->json(null, 204);
     }
